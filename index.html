@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>婚礼请柬</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&family=Noto+Serif+SC:wght@500;600&display=swap&v=20231102" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #c53030;
+            --accent-color: #d4af37;
+            --text-color: #fff;
+            --invitation-bg-color: #FFF0DB;
+            --invitation-text-color: #ede13c;
+            --highlight-color: #ded43e; /* 新增变量 */
+        }
+
+        body {
+            font-family: 'ZCOOL XiaoWei', serif;
+            font-weight: 500;
+            margin: 0;
+            background: #f3e9d2;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .book-container {
+            position: relative;
+            width: 320px;
+            height: 520px;
+            perspective: 2500px;
+            cursor: pointer;
+        }
+
+        .flipper {
+            width: 100%;
+            height: 100%;
+            transition: transform 1.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .book-container.flipped .flipper {
+            transform: rotateY(-180deg);
+        }
+
+        .book-container.flipped-twice .flipper {
+            transform: rotateY(-360deg);
+        }
+
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+        }
+
+        .front-cover {
+            background: var(--primary-color);
+            transform-style: preserve-3d;
+            z-index: 4;
+        }
+
+        .invitation-content {
+            background: var(--invitation-bg-color);
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><defs><pattern id="bgPattern" width="20" height="20" patternUnits="userSpaceOnUse"><rect x="0" y="0" width="20" height="20" fill="%23FFF0DB"/><circle cx="10" cy="10" r="3" fill="%23d4af37" opacity="0.1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23bgPattern)"/></svg>');
+            background-size: 100%;
+            background-repeat: repeat;
+            transform: rotateY(180deg);
+            border: 2px solid var(--accent-color);
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            z-index: 3;
+        }
+
+        .invitation-content::before,
+        .invitation-content::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="30" viewBox="0 0 100 30"><path d="M0 0 C25 20 75 20 100 0" stroke="%23FFD700" stroke-width="2" fill="none"/></svg>');
+            background-repeat: repeat-x;
+        }
+
+        .invitation-content::before {
+            top: 0;
+        }
+
+        .invitation-content::after {
+            bottom: 0;
+            transform: rotate(180deg);
+        }
+
+        .map-content {
+            background: var(--invitation-bg-color);
+            transform: rotateY(0deg);
+            border: 2px solid var(--accent-color);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 2;
+            display: none;
+            width: 640px;
+            height: 600px;
+            left: -160px;
+            top: -40px;
+            position: relative;
+        }
+
+        .book-container.flipped-twice .map-content {
+            display: flex;
+        }
+
+        .map-column {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .map-column img {
+            width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .map-column p {
+            margin: 0;
+            text-align: center;
+        }
+
+        /* 新增中间隔断样式 */
+        .map-divider {
+            position: absolute;
+            left: 50%;
+            top: 10px;
+            bottom: 10px;
+            width: 4px;
+            background-color: rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+            transform: translateX(-50%);
+            z-index: 3;
+        }
+
+        .front-cover::before,
+        .front-cover::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            mix-blend-mode: soft-light;
+        }
+
+        .front-cover::before {
+            background:
+                repeating-linear-gradient(45deg,
+                    transparent 0px,
+                    transparent 24px,
+                    var(--accent-color) 25px,
+                    transparent 26px),
+                radial-gradient(circle at 70% 30%,
+                    rgba(212, 175, 55, 0.15) 0%,
+                    transparent 40%);
+            mask-image: linear-gradient(120deg, black 40%, transparent 60%);
+            opacity: 0.8;
+        }
+
+        .front-cover::after {
+            background-image:
+                url('data:image/svg+xml;utf8,<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M32 0L48 16L32 32L16 16L32 0ZM0 32L16 48L32 32L16 16L0 32ZM32 64L16 48L32 32L48 48L32 64ZM64 32L48 16L32 32L48 48L64 32Z" fill="%23d4af37" opacity="0.1"/></svg>'),
+                linear-gradient(to bottom right, transparent 50%, rgba(212, 175, 55, 0.1) 100%);
+            background-size: 40px, auto;
+            opacity: 0.6;
+        }
+
+        .corner-pattern {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M20 0L0 20v60l20 20h60l20-20V20L80 0H20zm5 5h50l15 15v50L75 95H25L10 80V20L25 5zm15 15l-5 5v40l5 5h40l5-5V25l-5-5H40z" fill="%23d4af37" opacity="0.3"/></svg>');
+            background-size: contain;
+        }
+
+        .corner-pattern.tl {
+            top: 10px;
+            left: 10px;
+        }
+
+        .corner-pattern.tr {
+            top: 10px;
+            right: 10px;
+            transform: rotate(90deg);
+        }
+
+        .corner-pattern.bl {
+            bottom: 10px;
+            left: 10px;
+            transform: rotate(-90deg);
+        }
+
+        .corner-pattern.br {
+            bottom: 10px;
+            right: 10px;
+            transform: rotate(180deg);
+        }
+
+        .text-container {
+            position: absolute;
+            right: 0;
+            width: 54%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 2rem;
+            z-index: 3;
+            box-sizing: border-box;
+        }
+
+        .title-zh {
+            writing-mode: vertical-rl;
+            font-size: 3.8rem;
+            color: var(--accent-color);
+            letter-spacing: 22px;
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5), 0 0 24px rgba(212, 175, 55, 0.5);
+            margin: -1.5rem 2.2rem 0 0;
+            transform: translateY(-12px);
+            line-height: 1.2;
+        }
+
+        .title-en {
+            writing-mode: vertical-rl;
+            font-size: 1.1rem;
+            color: rgba(212, 175, 55, 0.9);
+            letter-spacing: 6px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3), 0 0 6px rgba(212, 175, 55, 0.2);
+            transform: translateX(1.8rem);
+            margin-left: 4.5rem;
+            padding-right: 1.5rem;
+        }
+
+        .divider {
+            position: absolute;
+            left: 48.4%;
+            top: 15%;
+            bottom: 15%;
+            width: 1.2px;
+            background: linear-gradient(to bottom, transparent 20%, var(--accent-color) 50%, transparent 80%);
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.2);
+            z-index: 2;
+        }
+
+        .vertical-invitation {
+            writing-mode: vertical-rl;
+            font-size: 1em;
+            font-weight: 600;
+            letter-spacing: 1px;
+            line-height: 1;
+            text-align: center;
+            padding: 0 15px;
+            color: var(--invitation-text-color); /* 使用定义好的金黄色变量 */
+            font-family: 'Noto Serif SC', 'SimSun-ExtB', '宋体', '仿宋', serif; /* 修改字体为更高级正式的字体 */
+        }
+
+        .highlight {
+            color: var(--highlight-color); /* 使用棕金色变量 */
+            font-weight: 500;
+            margin: 2px 0;
+            font-family: "LiSu", serif;
+        }
+
+        .wedding-time {
+            color: var(--highlight-color);
+            font-size: 0.9em;
+            margin: 3px 0;
+        }
+
+        .signature {
+            letter-spacing: 3px;
+            margin-top: 8px;
+        }
+
+        .loading-bar {
+            width: 120px;
+            height: 2px;
+            background: rgba(197, 48, 48, 0.2);
+            margin: 25px auto;
+            border-radius: 1px;
+            overflow: hidden;
+        }
+
+        .loading-bar::after {
+            content: "";
+            display: block;
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            animation: load 2.8s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+        }
+
+        @keyframes load {
+            0% {
+                width: 0;
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+
+        .panel-title {
+            writing-mode: vertical-rl;
+            font-family: 'ZCOOL XiaoWei';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            margin: 0;
+            color: var(--invitation-text-color);
+        }
+
+        /* 新增查看地图相关样式 */
+        @font-face {
+            font-family: 'HYChengXingJ';
+            src: url('fonts/HYChengXingJ.ttf');
+        }
+
+       .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+       .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            height: 80%;
+            position: relative;
+        }
+
+       .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+       .close:hover,
+       .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 新增外链跳转图标样式 */
+       .external-link-icon {
+            position: absolute;
+            top: 50%;
+            left: calc(50% + 340px); /* 书页宽度的一半加上书页的左边距 */
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: none;
+        }
+
+       .external-link-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+       .external-link-label {
+            position: absolute;
+            top: calc(50% + 25px); /* 图标下方 */
+            left: calc(50% + 360px);
+            transform: translateX(-50%);
+            font-size: 12px;
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .book-container {
+                width: 280px;
+                height: 460px;
+            }
+
+            .vertical-invitation {
+                font-size: 0.9em;
+                letter-spacing: 1px;
+                line-height: 0.9;
+                padding: 0 10px;
+            }
+
+            .text-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .title-zh {
+                font-size: 3rem;
+                margin: -1rem 1.8rem 0 0;
+            }
+
+            .divider {
+                left: 48.2%;
+                top: 12%;
+                bottom: 12%;
+            }
+
+            .corner-pattern {
+                width: 60px;
+                height: 60px;
+            }
+
+            .signature {
+                margin-top: 6px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="book-container">
+        <div class="flipper">
+            <!-- 封面 -->
+            <div class="page front-cover">
+                <div class="corner-pattern tl"></div>
+                <div class="corner-pattern tr"></div>
+                <div class="corner-pattern bl"></div>
+                <div class="corner-pattern br"></div>
+                <div class="divider"></div>
+                <div class="text-container">
+                    <div class="title-zh">请柬</div>
+                    <div class="title-en">Invitation</div>
+                </div>
+            </div>
+            <!-- 邀请函 -->
+            <div class="page invitation-content">
+                <h2 class="panel-title">诚邀</h2>
+                <div class="vertical-invitation">
+                    <p>谨择于</p>
+                    <p class="highlight">公历二零二五年五月二十五日 星期日<br>农历四月廿八</p>
+                    <p>假座</p>
+                    <p class="highlight">广州嘉逸皇冠酒店一楼皇冠酒家</p>
+                    <p>为爱子 <span class="highlight">麦景坤</span> 与贤媳 <span class="highlight">曾敏伦</span>举行新婚典礼</p>
+                    <p>敬备喜酌，恭候光临</p>
+                    <p class="wedding-time">下午五时恭候 六时入席</p>
+                    <p class="signature">麦国雄  钟玲 敬邀</p>
+                </div>
+                <div class="loading-bar"></div>
+            </div>
+            <!-- 地图页 -->
+            <div class="page map-content">
+                <div class="map-column">
+                    <img src="酒店.jpg" alt="地图实际图片">
+                    <p>广州嘉逸皇冠酒店一楼皇冠酒家<br>详细地址：[广州市天河区中山大道中483号]</p>
+                </div>
+                <div class="map-column">
+                    <!-- 替换为腾讯电子地图 -->
+                    <iframe
+                        src="https://apis.map.qq.com/tools/poimarker?type=0&marker=coord:23.121129,113.408152;title:广州嘉逸皇冠酒店;addr:中山大道中483号(东圃广场附近)&key=BDRBZ-QF73J-OGKFX-DSJ47-N3CXQ-UDFFO&referer=hotelloc&zoom=18"
+                        frameborder="0" style="width: 100%; height: 400px;"></iframe>
+                    <p><br>导航指引：[点击‘去这里’按钮-确定出发地-确定出行方式]</p>
+                    <!-- 删除查看地图按钮 -->
+                    <!-- <button onclick="showMap()">查看地图</button> -->
+                </div>
+                <!-- 新增中间隔断元素 -->
+                <div class="map-divider"></div>
+            </div>
+        </div>
+    </div>
+    <!-- 新增外链跳转图标 -->
+    <div class="external-link-icon" onclick="redirectPage()">
+        <img src="hh.png" alt="外链跳转图标">
+    </div>
+    <!-- 新增小字标注 -->
+    <div class="external-link-label">幸福时刻</div>
+
+
+    <script>
+        const book = document.querySelector('.book-container');
+        const externalLinkIcon = document.querySelector('.external-link-icon');
+        const externalLinkLabel = document.querySelector('.external-link-label');
+
+        function redirectPage() {
+            window.location.href = 'https://e-invitation.hunliji.com/p/frontend/creation-platform/app-preview-wedding-card/dist/index.html?cardId=MTE4NzE3MDE4ZmlyZV9jbG91ZA&wxUnionId=okQHxjmX0pcTwbL4q2gAJ5R4Byhs&wxOpenId=o7420wZxsPurbOPsPv9q931aGsAc&nickname=CheLsea.M&avatar=https://qnm.hunliji.com/95aac1661e92b835e4c91490bdf82d43.jpeg&bizCode=9niosqadna#/';
+        }
+
+        book.addEventListener('click', () => {
+            if (!book.classList.contains('flipped')) {
+                // 封面 -> 邀请函
+                book.classList.add('flipped');
+            } else if (!book.classList.contains('flipped-twice')) {
+                // 邀请函 -> 地图页
+                book.classList.add('flipped-twice');
+                // 隐藏封面和邀请函页，显示地图页
+                document.querySelector('.front-cover').style.display = 'none';
+                document.querySelector('.invitation-content').style.display = 'none';
+                document.querySelector('.map-content').style.display = 'flex';
+                // 显示外链跳转图标和小字标注
+                externalLinkIcon.style.display = 'block';
+                externalLinkLabel.style.display = 'block';
+            }
+        });
+
+    </script>
+</body>
+
+</html>    
