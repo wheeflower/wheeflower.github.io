@@ -16,7 +16,7 @@
             --text-color: #fff;
             --invitation-bg-color: #FFF0DB;
             --invitation-text-color: #666119;
-            --highlight-color: #666119; /* 新增变量 */
+            --highlight-color: #666119;
         }
 
         body {
@@ -114,13 +114,12 @@
             border: 2px solid var(--accent-color);
             box-sizing: border-box;
             display: flex;
-            flex-direction: column; /* 修改为垂直布局 */
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 20px;
             z-index: 2;
             display: none;
-            /* 修改宽度和高度与邀请函一致 */
             width: 100%;
             height: 109%;
             left: 0;
@@ -133,8 +132,8 @@
         }
 
         .map-column {
-            width: 100%; /* 修改为 100% */
-            height: auto; /* 高度自动 */
+            width: 100%;
+            height: auto;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -151,7 +150,7 @@
         .map-column p {
             margin: 0;
             text-align: center;
-            font-size: 0.7em; /* 缩小文字大小 */
+            font-size: 0.7em;
         }
 
         .front-cover::before,
@@ -272,12 +271,12 @@
             line-height: 1;
             text-align: center;
             padding: 0 15px;
-            color: var(--invitation-text-color); /* 使用定义好的金黄色变量 */
-            font-family: 'Noto Serif SC', 'SimSun-ExtB', '宋体', '仿宋', serif; /* 修改字体为更高级正式的字体 */
+            color: var(--invitation-text-color);
+            font-family: 'Noto Serif SC', 'SimSun-ExtB', '宋体', '仿宋', serif;
         }
 
         .highlight {
-            color: var(--highlight-color); /* 使用棕金色变量 */
+            color: var(--highlight-color);
             font-weight: 500;
             margin: 2px 0;
             font-family: "LiSu", serif;
@@ -334,7 +333,6 @@
             color: var(--invitation-text-color);
         }
 
-        /* 新增查看地图相关样式 */
         @font-face {
             font-family: 'HYChengXingJ';
             src: url('fonts/HYChengXingJ.ttf');
@@ -382,68 +380,54 @@
             height: 100%;
         }
 
-        /* 移除外链跳转图标和小字标注样式 */
-        /* .external-link-icon {
+        /* 自定义箭头样式 */
+        .custom-arrow {
             position: absolute;
-            bottom: 65px; 
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 40px;
+            bottom: 120px;
+            right: 20px;
+            width: 30px;
+            height: 30px;
             cursor: pointer;
-            display: none;
+            animation: bounce 1s infinite alternate;
+            transform: scaleX(-1);
         }
-        
-        .external-link-icon img {
+
+        .custom-arrow .arrow-left,
+        .custom-arrow .arrow-right {
+            position: absolute;
+            width: 12px;
+            height: 2px;
+            background-color: var(--accent-color);
+            top: 50%;
+            transform-origin: left center;
+        }
+
+        .custom-arrow .arrow-left {
+            left: 0;
+            transform: translateY(-50%) rotate(30deg);
+        }
+
+        .custom-arrow .arrow-right {
+            left: 0;
+            transform: translateY(-50%) rotate(-30deg);
+        }
+
+        .custom-arrow .arrow-group {
+            position: absolute;
             width: 100%;
             height: 100%;
-            object-fit: cover;
         }
-        
-        .external-link-label {
-            position: absolute;
-            bottom: 65px; 
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 10px;
-            display: none;
-        } */
 
-        @media (max-width: 480px) {
-            .book-container {
-                width: 280px;
-                height: 460px;
+        .custom-arrow .arrow-group:nth-child(2) {
+            left: 10px;       
+        }
+
+        @keyframes bounce {
+            0% {
+                transform: scaleX(-1) translateX(0);
             }
-
-            .vertical-invitation {
-                font-size: 0.9em;
-                letter-spacing: 1px;
-                line-height: 0.9;
-                padding: 0 10px;
-            }
-
-            .text-container {
-                padding: 2rem 1.5rem;
-            }
-
-            .title-zh {
-                font-size: 3rem;
-                margin: -1rem 1.8rem 0 0;
-            }
-
-            .divider {
-                left: 48.2%;
-                top: 12%;
-                bottom: 12%;
-            }
-
-            .corner-pattern {
-                width: 60px;
-                height: 60px;
-            }
-
-            .signature {
-                margin-top: 6px;
+            100% {
+                transform: scaleX(-1) translateX(5px);
             }
         }
     </style>
@@ -482,25 +466,28 @@
             <!-- 地图页 -->
             <div class="page map-content">
                 <div class="map-column">
-                    <!-- 替换为腾讯电子地图 -->
                     <iframe
                         src="https://apis.map.qq.com/tools/poimarker?type=0&marker=coord:23.121129,113.408152;title:广州嘉逸皇冠酒店;addr:中山大道中483号(东圃广场附近)&key=BDRBZ-QF73J-OGKFX-DSJ47-N3CXQ-UDFFO&referer=hotelloc&zoom=18"
-                        frameborder="0" style="width: 105%; height: 295px;"></iframe> <!-- 增大地图高度 -->
+                        frameborder="0" style="width: 105%; height: 295px;"></iframe>
                     <p>导航指引：[点击‘去这里’按钮-确定出发地-确定出行方式]</p>
                 </div>
                 <div class="map-column">
                     <img src="酒店.jpg" alt="地图实际图片">
                     <p>广州嘉逸皇冠酒店一楼皇冠酒家<br>详细地址：[广州市天河区中山大道中483号]</p>
                 </div>
+                <div class="custom-arrow" onclick="redirectPage()">
+                    <div class="arrow-group">
+                        <div class="arrow-left"></div>
+                        <div class="arrow-right"></div>
+                    </div>
+                    <div class="arrow-group">
+                        <div class="arrow-left"></div>
+                        <div class="arrow-right"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <!-- 移除外链跳转图标和小字标注 -->
-    <!-- <div class="external-link-icon" onclick="redirectPage()">
-        <img src="hh.png" alt="外链跳转图标">
-    </div>
-    <div class="external-link-label">~ 点击了解更多信息 ~</div> -->
-
 
     <script>
         const book = document.querySelector('.book-container');
@@ -518,36 +505,38 @@
 
         book.addEventListener('click', () => {
             if (!book.classList.contains('flipped')) {
-                // 封面 -> 邀请函
                 book.classList.add('flipped');
             } else if (!book.classList.contains('flipped-twice')) {
-                // 邀请函 -> 地图页
                 book.classList.add('flipped-twice');
-                // 隐藏封面和邀请函页，显示地图页
                 document.querySelector('.front-cover').style.display = 'none';
                 document.querySelector('.invitation-content').style.display = 'none';
                 mapContent.style.display = 'flex';
 
-                // 开始计时
                 startTimer();
 
-                // 点击书页空白处跳转
                 mapContent.addEventListener('click', function (event) {
                     const isClickOnText = event.target.tagName === 'P';
                     const isClickOnMap = event.target.tagName === 'IFRAME';
                     const isClickOnImage = event.target.tagName === 'IMG';
+                    const isClickOnArrow = event.target.closest('.custom-arrow');
 
-                    if (!isClickOnText && !isClickOnMap && !isClickOnImage) {
+                    if (!isClickOnText && !isClickOnMap && !isClickOnImage && !isClickOnArrow) {
                         redirectPage();
                     }
                 });
             }
         });
 
-        // 当鼠标移动或点击时重置计时器
+        document.addEventListener('click', function (event) {
+            const isClickOnBook = event.target.closest('.book-container');
+            if (!isClickOnBook && book.classList.contains('flipped-twice')) {
+                redirectPage();
+            }
+        });
+
         document.addEventListener('mousemove', startTimer);
         document.addEventListener('click', startTimer);
     </script>
 </body>
 
-</html>
+</html>    
