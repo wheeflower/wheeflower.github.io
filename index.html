@@ -382,10 +382,10 @@
             height: 100%;
         }
 
-        /* 新增外链跳转图标样式 */
-        .external-link-icon {
+        /* 移除外链跳转图标和小字标注样式 */
+        /* .external-link-icon {
             position: absolute;
-            bottom: 65px; /* 修改为距离底部 45px */
+            bottom: 65px; 
             left: 50%;
             transform: translateX(-50%);
             width: 40px;
@@ -402,12 +402,12 @@
         
         .external-link-label {
             position: absolute;
-            bottom: 65px; /* 修改为距离底部 55px */
+            bottom: 65px; 
             left: 50%;
             transform: translateX(-50%);
             font-size: 10px;
             display: none;
-        }
+        } */
 
         @media (max-width: 480px) {
             .book-container {
@@ -466,7 +466,7 @@
             </div>
             <!-- 邀请函 -->
             <div class="page invitation-content">
-                <h2 class="panel-title", style="color: #ccc432;">诚邀</h2>
+                <h2 class="panel-title" style="color: #ccc432;">诚邀</h2>
                 <div class="vertical-invitation">
                     <p>谨择于</p>
                     <p class="highlight">公历二零二五年五月二十五日 星期日<br>农历四月廿八</p>
@@ -492,25 +492,28 @@
                     <img src="酒店.jpg" alt="地图实际图片">
                     <p>广州嘉逸皇冠酒店一楼皇冠酒家<br>详细地址：[广州市天河区中山大道中483号]</p>
                 </div>
-
             </div>
         </div>
     </div>
-    <!-- 新增外链跳转图标 -->
-    <div class="external-link-icon" onclick="redirectPage()">
+    <!-- 移除外链跳转图标和小字标注 -->
+    <!-- <div class="external-link-icon" onclick="redirectPage()">
         <img src="hh.png" alt="外链跳转图标">
     </div>
-    <!-- 新增小字标注 -->
-    <div class="external-link-label">~ 点击了解更多信息 ~</div>
+    <div class="external-link-label">~ 点击了解更多信息 ~</div> -->
 
 
     <script>
         const book = document.querySelector('.book-container');
-        const externalLinkIcon = document.querySelector('.external-link-icon');
-        const externalLinkLabel = document.querySelector('.external-link-label');
+        const mapContent = document.querySelector('.map-content');
+        let timer;
 
         function redirectPage() {
             window.location.href = 'https://e-invitation.hunliji.com/p/frontend/creation-platform/app-preview-wedding-card/dist/index.html?cardId=MTE4NzE3MDE4ZmlyZV9jbG91ZA&wxUnionId=okQHxjmX0pcTwbL4q2gAJ5R4Byhs&wxOpenId=o7420wZxsPurbOPsPv9q931aGsAc&nickname=CheLsea.M&avatar=https://qnm.hunliji.com/95aac1661e92b835e4c91490bdf82d43.jpeg&bizCode=9niosqadna#/';
+        }
+
+        function startTimer() {
+            clearTimeout(timer);
+            timer = setTimeout(redirectPage, 20000);
         }
 
         book.addEventListener('click', () => {
@@ -523,12 +526,27 @@
                 // 隐藏封面和邀请函页，显示地图页
                 document.querySelector('.front-cover').style.display = 'none';
                 document.querySelector('.invitation-content').style.display = 'none';
-                document.querySelector('.map-content').style.display = 'flex';
-                // 显示外链跳转图标和小字标注
-                externalLinkIcon.style.display = 'block';
-                externalLinkLabel.style.display = 'block';
+                mapContent.style.display = 'flex';
+
+                // 开始计时
+                startTimer();
+
+                // 点击书页空白处跳转
+                mapContent.addEventListener('click', function (event) {
+                    const isClickOnText = event.target.tagName === 'P';
+                    const isClickOnMap = event.target.tagName === 'IFRAME';
+                    const isClickOnImage = event.target.tagName === 'IMG';
+
+                    if (!isClickOnText && !isClickOnMap && !isClickOnImage) {
+                        redirectPage();
+                    }
+                });
             }
         });
+
+        // 当鼠标移动或点击时重置计时器
+        document.addEventListener('mousemove', startTimer);
+        document.addEventListener('click', startTimer);
     </script>
 </body>
 
